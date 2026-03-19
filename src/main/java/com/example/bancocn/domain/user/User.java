@@ -1,19 +1,21 @@
 package com.example.bancocn.domain.user;
 
 
+import com.example.bancocn.domain.transaction.Transaction;
+import com.example.bancocn.dtos.UserDTO;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.usertype.UserType;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 
 @Entity(name="users")
 @Table(name="users")
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of="id")
 public class User {
     @Id
@@ -28,9 +30,29 @@ public class User {
     private String password;
     private BigDecimal balance;
     @Enumerated(EnumType.STRING)
-    private userType userType;
+    private UserType userType;
 
-    public User() {
 
+
+    @OneToMany(mappedBy = "sender")
+    private Collection<Transaction> transaction;
+
+    public Collection<Transaction> getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(Collection<Transaction> transaction) {
+        this.transaction = transaction;
+    }
+
+    public  User(UserDTO data) {
+        this.firstName = data.firstName();
+        this.lastName = data.lastName();
+        this.balance = data.balance();
+        this.userType = data.userType();
+        this.password = data.password();
+        this.email = data.email();
     }
 }
+
+
